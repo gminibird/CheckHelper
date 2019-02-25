@@ -1,6 +1,7 @@
 package com.luwei.checkhelper;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 
 /**
  * Created by Mr_Zeng
@@ -9,7 +10,7 @@ import android.support.v7.widget.RecyclerView;
  */
 public class SingleCheckHelper extends CheckHelper {
 
-    private final int TAG = hashCode();
+    private final int TAG = R.id.check_tag;
     private final Object TAG_VALUE = new Object();
     //是否可以取消
     private boolean canCancel = true;
@@ -18,22 +19,39 @@ public class SingleCheckHelper extends CheckHelper {
     private Object d;
     private RecyclerView.ViewHolder v;
 
+    public SingleCheckHelper() {
+        addDownSteamInterceptor(new Interceptor() {
+            @Override
+            public void intercept(Chain chain) {
+                synchronized (SingleCheckHelper.this){
+                    Stream stream = chain.stream();
+                    Object d = stream.getD();
+                    RecyclerView.ViewHolder v = stream.getV();
+                    stream.setChecked(!isChecked(d,v));
+                    Log.e("=======single",d.toString());
+                    if (stream.isToCheck()) {
+                        unCheckPre(d);
+                        setTag(v);
+                        SingleCheckHelper.this.v = v;
+                        SingleCheckHelper.this.d = d;
+                    } else {
+                        if (!canCancel) {
+                            return;
+                        }
+                        clearTag(v);
+                        SingleCheckHelper.this.d = null;
+                        SingleCheckHelper.this.v = null;
+                    }
+                    chain.proceed(stream);
+                }
+            }
+        });
+    }
+
     @Override
     public void select(Object d, RecyclerView.ViewHolder v, boolean toCheck) {
-        if (toCheck) {
-            unCheckPre(d);
-            setTag(v);
-            this.v = v;
-            this.d = d;
-        } else {
-            if (!canCancel){
-                return;
-            }
-            clearTag(v);
-            this.d = null;
-            this.v = null;
-        }
         super.select(d, v, toCheck);
+
     }
 
     @Override
@@ -67,7 +85,8 @@ public class SingleCheckHelper extends CheckHelper {
         }
         if (this.d != null && this.v != null && this.v.itemView.getTag(TAG) != null) {
             //当上一个选中存在并且可见时置为非选
-            bind(d, v, false);
+            Checker checker = mCheckerMap.get(this.d.getClass());
+            checker.unCheck(this.d,this.v);
         }
     }
 
@@ -101,9 +120,8 @@ public class SingleCheckHelper extends CheckHelper {
         this.canCancel = canCancel;
     }
 
-    public <T> T getSelected() {
+    public <T> T getChecked() {
         return (T) d;
     }
-
 
 }

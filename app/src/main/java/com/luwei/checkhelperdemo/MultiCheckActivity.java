@@ -77,13 +77,12 @@ public class MultiCheckActivity extends AppCompatActivity
         //选择监听器
         mCheckHelper.addOnSelectListener(String.class, (s, viewHolder, isCheck) -> {
             if (isCheck) {
-                String tips = "选择" + s + ",一共已选" + mCheckHelper.getSelected().size() + "个";
+                String tips = "选择" + s + ",一共已选" + mCheckHelper.getChecked().size() + "个";
                 Toast.makeText(viewHolder.itemView.getContext(), tips, Toast.LENGTH_SHORT).show();
             }
         });
         //添加默认数据
-//        mCheckHelper.setHasDefault(true);
-//        mCheckHelper.add(mItems.get(0));
+        mCheckHelper.add(mItems.get(0));
         return mCheckHelper;
     }
 

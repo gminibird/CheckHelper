@@ -18,6 +18,7 @@
         </activity>
         <activity android:name=".SingleCheckActivity" />
         <activity android:name=".MultiCheckActivity" />
+        <activity android:name=".InterceptorActivity" />
     </application>
 
 </manifest>

@@ -17,4 +17,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="多选"/>
+
+    <Button
+        android:id="@+id/btn_interceptor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="拦截"/>
 </LinearLayout>

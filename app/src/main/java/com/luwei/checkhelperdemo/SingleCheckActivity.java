@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.widget.Toast;
 
 import com.luwei.checkhelper.CheckHelper;
+import com.luwei.checkhelper.MultiCheckHelper;
 import com.luwei.checkhelper.SingleCheckHelper;
 import com.luwei.recyclerview.adapter.extension.LwViewHolder;
 import com.luwei.recyclerview.adapter.multitype.Items;
@@ -26,7 +27,7 @@ public class SingleCheckActivity extends AppCompatActivity {
     private RecyclerView mRvContent;
     private Items mItems;
     private LwAdapter mAdapter;
-    private SingleCheckHelper mCheckHelper;
+    protected SingleCheckHelper mCheckHelper;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -71,7 +72,7 @@ public class SingleCheckActivity extends AppCompatActivity {
         //选择监听
         mCheckHelper.addOnSelectListener(String.class, (s, viewHolder, isCheck) -> {
             if (isCheck) {
-                String tips = "当前选择 " + mCheckHelper.getSelected(); //or + s
+                String tips = "当前选择 " + mCheckHelper.getChecked(); //or + s
                 Toast.makeText(viewHolder.itemView.getContext(), tips,
                         Toast.LENGTH_SHORT).show();
             }

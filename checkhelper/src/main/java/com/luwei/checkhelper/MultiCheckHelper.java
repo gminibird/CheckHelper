@@ -16,10 +16,19 @@ import java.util.Set;
 public class MultiCheckHelper extends CheckHelper {
 
     protected HashMap<Class, Set<?>> mMap;
-    private boolean hasDefault = false;
 
     public MultiCheckHelper() {
         mMap = new HashMap<>();
+        addDownSteamInterceptor(new Interceptor() {
+            @Override
+            public void intercept(Chain chain) {
+                synchronized (MultiCheckHelper.this) {
+                    Stream stream = chain.stream();
+                    update(stream.getD(), stream.isToCheck());
+                    chain.proceed(stream);
+                }
+            }
+        });
     }
 
     @SuppressWarnings("unchecked")
@@ -40,20 +49,6 @@ public class MultiCheckHelper extends CheckHelper {
                 mMap.remove(d.getClass());
             }
         }
-    }
-
-    @Override
-    public void select(Object d, RecyclerView.ViewHolder v, boolean toCheck) {
-        update(d, toCheck);
-        super.select(d, v, toCheck);
-    }
-
-    @Override
-    public void bind(Object d, RecyclerView.ViewHolder v, boolean toCheck) {
-        if (hasDefault) {
-            update(d, toCheck);
-        }
-        super.bind(d, v, toCheck);
     }
 
     protected void update(Object d, boolean toCheck) {
@@ -99,7 +94,7 @@ public class MultiCheckHelper extends CheckHelper {
     }
 
     /**
-     * 取消全部选择
+     * 取消全部选中
      */
     public void unCheckAll(RecyclerView.Adapter adapter) {
         if (mMap.size() == 0) {
@@ -109,6 +104,12 @@ public class MultiCheckHelper extends CheckHelper {
         adapter.notifyDataSetChanged();
     }
 
+    /**
+     * 取消全部选中(指定数据)
+     *
+     * @param adapter
+     * @param list    需要取消选择的列表,该列表中如果有选中的item将会置为非选中
+     */
     @SuppressWarnings("unchecked")
     public <T> void unCheckAll(RecyclerView.Adapter adapter, Class<T> clazz, List<T> list) {
         Set<T> set = (Set<T>) mMap.get(clazz);
@@ -116,20 +117,29 @@ public class MultiCheckHelper extends CheckHelper {
             return;
         }
         set.removeAll(list);
+        if (set.isEmpty()) {
+            mMap.remove(clazz);
+        }
         adapter.notifyDataSetChanged();
     }
 
+    /**
+     * 根据数据类型取消全部选择
+     *
+     * @param adapter
+     * @param clazz   需要取消的类型
+     */
     public void unCheckAll(RecyclerView.Adapter adapter, Class clazz) {
         mMap.remove(clazz);
         adapter.notifyDataSetChanged();
     }
 
     @SuppressWarnings("unchecked")
-    public <T> Set<T> getSelected(Class<T> type) {
+    public <T> Set<T> getChecked(Class<T> type) {
         return (Set<T>) mMap.get(type);
     }
 
-    public Set<Object> getSelected() {
+    public Set<Object> getChecked() {
         Set<Object> set = new HashSet<>();
         for (Set set1 : mMap.values()) {
             set.addAll(set1);
@@ -148,13 +158,26 @@ public class MultiCheckHelper extends CheckHelper {
         return mMap.size() != 0;
     }
 
+    /**
+     * 指定列表是否全部选中
+     *
+     * @param list 需要判断的列表
+     * @return
+     */
     public boolean isAllChecked(List<?> list) {
-        return getSelected().containsAll(list);
+        return getChecked().containsAll(list);
     }
 
 
+    /**
+     * 指定列表里面的指定类型是否全部选中
+     *
+     * @param list  需要判断的列表
+     * @param clazz 指定类型
+     * @return
+     */
     public <T> boolean isAllChecked(List<?> list, Class<T> clazz) {
-        Set<T> set = getSelected(clazz);
+        Set<T> set = getChecked(clazz);
         if (set == null) {
             return false;
         }
@@ -167,13 +190,5 @@ public class MultiCheckHelper extends CheckHelper {
             }
         }
         return true;
-    }
-
-    public boolean hasDefault() {
-        return hasDefault;
-    }
-
-    public void setHasDefault(boolean hasDefault) {
-        this.hasDefault = hasDefault;
     }
 }

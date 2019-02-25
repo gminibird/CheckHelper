@@ -13,17 +13,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         findViewById(R.id.btn_single_check).setOnClickListener(this);
         findViewById(R.id.btn_multi_check).setOnClickListener(this);
+        findViewById(R.id.btn_interceptor).setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.btn_single_check:
+                //单选
                 startActivity(new Intent(this,SingleCheckActivity.class));
                 break;
             case R.id.btn_multi_check:
+                //多选
                 startActivity(new Intent(this,MultiCheckActivity.class));
                 break;
+            case R.id.btn_interceptor:
+                //拦截器
+                startActivity(new Intent(this,InterceptorActivity.class));
         }
     }
 }
