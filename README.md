@@ -1,5 +1,7 @@
 # CheckHelper
 
+[![](https://jitpack.io/v/gminibird/CheckHelper.svg)](https://jitpack.io/#gminibird/CheckHelper)
+
 ## 一 瞎扯淡
 > [你还在为列表[单选]、[多选]写重复的逻辑吗](https://juejin.im/post/5c4d8325f265da616b110e9f)
 
