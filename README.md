@@ -1,5 +1,5 @@
 # CheckHelper
-[![](https://user-gold-cdn.xitu.io/2019/2/23/16919ada6cfb25a7?w=80&h=20&f=svg&s=886)](https://jitpack.io/#gminibird/CheckHelper)
+
 ## 一 瞎扯淡
 > [你还在为列表[单选]、[多选]写重复的逻辑吗](https://juejin.im/post/5c4d8325f265da616b110e9f)
 
@@ -20,7 +20,6 @@
 - 没有调用 `Adapter.notifyItemChange `方法，所以不会有闪屏Bug
 ## 三 使用
 #### 1.配置
-[![](https://user-gold-cdn.xitu.io/2019/2/23/16919ada6cfb25a7?w=80&h=20&f=svg&s=886)](https://jitpack.io/#gminibird/CheckHelper)
 Step 1. 在你项目的 Project (根目录)的 build.gradle 文件添加下面配置：
 
 ```
